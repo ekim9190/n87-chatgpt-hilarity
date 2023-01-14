@@ -233,3 +233,331 @@ Can you write an abstract for this talk?
 Sure, here is an abstract for the talk:
 
 The use of ChatGPT, a large language model developed by OpenAI, in network engineering can help to automate repetitive and time-consuming tasks, reduce human error, and improve the efficiency and accuracy of network operations. This talk will explore the potential use cases for ChatGPT in network engineering, including automating configuration management, troubleshooting, and documentation. Examples will be provided of how ChatGPT has been used to assist in these tasks for popular vendors such as Cisco and Juniper. Additionally, the challenges and limitations of using ChatGPT in network engineering will be discussed. The talk will provide an overview of the benefits and possibilities of using ChatGPT in network engineering and how it can help network engineers to focus on more critical tasks.
+
+
+
+
+Mike Starr
+What are some examples of compliance rules that you mention on slide 3?
+On slide 3, when discussing using ChatGPT to validate configurations for compliance, some examples of compliance rules that could be referenced include:
+
+Industry standards such as PCI DSS, HIPAA, NIST, etc.
+Organizational policies such as security standards, network segmentation policies, and access control policies
+Network best practices such as routing protocol configurations, firewall rule sets, and VLAN configurations.
+These are just a few examples, and the specific compliance rules that would be used would depend on the organization and the industry they operate in. Compliance rules can include security protocols, specific configurations, access control and more. These rules are usually defined by regulatory bodies or internal IT teams to ensure the network infrastructure is secure, compliant with regulations and industry standards, and follows best practices.
+
+
+
+
+Mike Starr
+Can you generate a complete example configuration for a Cisco router with the purpose of starting an Internet Exchange from scratch?
+Sure, here is an example of a complete configuration for a Cisco router that can be used to start an Internet Exchange (IX) from scratch:
+
+Copy code
+! Enable routing protocols
+router ospf 1
+ network 10.0.0.0 0.255.255.255 area 0
+!
+router bgp 100
+ no synchronization
+ bgp log-neighbor-changes
+ network 10.0.0.0 mask 255.0.0.0
+ neighbor 10.0.0.1 remote-as 200
+ neighbor 10.0.0.1 update-source loopback0
+!
+! Configure interfaces
+interface Loopback0
+ ip address 10.0.0.1 255.255.255.255
+!
+interface GigabitEthernet0/0
+ ip address 10.1.1.1 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet0/1
+ ip address 10.1.2.1 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet0/2
+ ip address 10.1.3.1 255.255.255.0
+ no shutdown
+!
+! Configure BGP peering sessions
+router bgp 100
+ neighbor 10.1.1.2 remote-as 200
+ neighbor 10.1.1.2 update-source loopback0
+ neighbor 10.1.2.2 remote-as 300
+ neighbor 10.1.2.2 update-source loopback0
+ neighbor 10.1.3.2 remote-as 400
+ neighbor 10.1.3.2 update-source loopback0
+!
+! Configure route-maps to control inbound/outbound routing
+route-map IX-IN permit 10
+ match ip address prefix-list IX-IN
+ set local-preference 150
+!
+route-map IX-OUT permit 10
+ match ip address prefix-list IX-OUT
+
+
+
+Mike Starr
+continue
+Sure, here is the continuation of the example configuration:
+
+Copy code
+!
+ip prefix-list IX-IN seq 5 permit 10.1.1.0/24
+ip prefix-list IX-IN seq 10 permit 10.1.2.0/24
+ip prefix-list IX-IN seq 15 permit 10.1.3.0/24
+ip prefix-list IX-OUT seq 5 permit 10.2.1.0/24
+ip prefix-list IX-OUT seq 10 permit 10.2.2.0/24
+ip prefix-list IX-OUT seq 15 permit 10.2.3.0/24
+!
+! Apply route-maps to control inbound/outbound routing
+router bgp 100
+ neighbor 10.1.1.2 route-map IX-IN in
+ neighbor 10.1.1.2 route-map IX-OUT out
+ neighbor 10.1.2.2 route-map IX-IN in
+ neighbor 10.1.2.2 route-map IX-OUT out
+ neighbor 10.1.3.2 route-map IX-IN in
+ neighbor 10.1.3.2 route-map IX-OUT out
+This is just an example configuration, and it may need to be adjusted based on the
+
+
+
+
+Mike Starr
+keep going
+Sure, here is the continuation of the example configuration:
+
+specific requirements of the IX and the network infrastructure. The above configuration sets up routing protocols (OSPF and BGP), interfaces, BGP peering sessions, and route-maps to control inbound and outbound routing. This would allow the router to start routing traffic between the different networks connected to the IX.
+
+It's important to note that this example is just an illustration and it's not meant to be a complete or production-ready configuration. Depending on the specific requirements of the IX, additional configuration may be needed, such as security, QoS, or IP address assignments. Also, it's important to test and validate the configuration before deploying it to production.
+
+It's also important to note that this example is not covering the IXP implementation details such as peering policies, agreements, etc. This configuration is also not covering the IXP software implementation like the one provided by route-server solutions like open-ixp, etc.
+
+
+
+
+Mike Starr
+Can you create a template from this example?
+Sure, here is a template that can be used to create a configuration for a Cisco router that can be used to start an Internet Exchange (IX) from scratch:
+
+Copy code
+! Enable routing protocols
+router ospf 1
+ network _________ _________ area _____
+!
+router bgp _____
+ no synchronization
+ bgp log-neighbor-changes
+ network _________ mask _________
+ neighbor _________ remote-as _____
+ neighbor _________ update-source _________
+!
+! Configure interfaces
+interface _________
+ ip address _________ _________
+!
+interface _________
+ ip address _________ _________
+ no shutdown
+!
+interface _________
+ ip address _________ _________
+ no shutdown
+!
+! Configure BGP peering sessions
+router bgp _____
+ neighbor _________ remote-as _____
+ neighbor _________ update-source _________
+ neighbor _________ remote-as _____
+ neighbor _________ update-source _________
+ neighbor _________ remote-as _____
+ neighbor _________ update-source _________
+!
+! Configure route-maps to control inbound/outbound routing
+route-map _________ permit _____
+ match ip address prefix-list _________
+ set local-preference _____
+!
+route-map _________ permit _____
+ match ip address prefix-list _________
+!
+ip prefix-list _________ seq _____ permit _________
+
+
+
+Mike Starr
+continue
+Sure, here is the continuation of the template:
+
+Copy code
+ip prefix-list _________ seq _____ permit _________
+ip prefix-list _________ seq _____ permit _________
+ip prefix-list _________ seq _____ permit _________
+!
+! Apply route-maps to control inbound/outbound routing
+router bgp _____
+ neighbor _________ route-map _________ in
+ neighbor _________ route-map _________ out
+ neighbor _________ route-map _________ in
+ neighbor _________ route-map _________ out
+ neighbor _________ route-map _________ in
+ neighbor _________ route-map _________ out
+This template can be used as a starting point to create a configuration for a Cisco router that can be used to start an Internet Exchange (IX) from scratch. The template includes all the necessary commands to set up routing protocols, interfaces, BGP peering sessions, and route-maps to control inbound and outbound routing. The template is not a complete configuration and some information needs to be filled in to match the specific requirements of the IX and the network infrastructure.
+
+It's important to note that this template is not covering the IXP implementation details such as peering policies, agreements, etc. This configuration is also not covering the IXP software implementation like the one provided by route-server solutions like open-ixp, etc.
+
+It's also important to test and validate the configuration before deploying it to production.
+
+
+
+
+Mike Starr
+Can you make a template for Juniper too?
+Sure, here is a template that can be used to create a configuration for a Juniper router that can be used to start an Internet Exchange (IX) from scratch:
+
+Copy code
+set protocols ospf area 0 interface ge-0/0/0.0
+set protocols ospf area 0 interface ge-0/0/1.0
+set protocols ospf area 0 interface ge-0/0/2.0
+set protocols bgp group internal-peers type internal
+set protocols bgp group internal-peers local-address 10.0.0.1
+set protocols bgp group internal-peers peer-as 200
+set protocols bgp group internal-peers neighbor 10.0.0.2
+set policy-options policy-statement IX-IN from protocol bgp
+set policy-options policy-statement IX-IN then local-preference 150
+set policy-options policy-statement IX-IN then accept
+set policy-options policy-statement IX-OUT from protocol bgp
+set policy-options policy-statement IX-OUT then accept
+set policy-options prefix-list IX-IN 10.1.1.0/24
+set policy-options prefix-list IX-IN 10.1.2.0/24
+set policy-options prefix-list IX-IN 10.1.3.0/24
+set policy-options prefix-list IX-OUT 10.2.1.0/24
+set policy-options prefix-list IX-OUT 10.2.2.0/24
+set policy-options prefix-list IX-OUT 10.2.3.0/
+
+
+
+Mike Starr
+continue
+Sure, here is the continuation of the template:
+
+Copy code
+set interfaces ge-0/0/0 unit 0 family inet address 10.1.1.1/24
+set interfaces ge-0/0/1 unit 0 family inet address 10.1.2.1/24
+set interfaces ge-0/0/2 unit 0 family inet address 10.1.3.1/24
+set protocols bgp group internal-peers import IX-IN
+set protocols bgp group internal-peers export IX-OUT
+This is a template that can be used as a starting point to create a configuration for a Juniper router that can be used to start an Internet Exchange (IX) from scratch. The template includes all the necessary commands to set up routing protocols, interfaces, BGP peering sessions, and route-maps to control inbound and outbound routing. The template is not a complete configuration and some information needs to be filled in to match the specific requirements of the IX and the network infrastructure.
+
+It's important to note that this template is not covering the IXP implementation details such as peering policies, agreements, etc. This configuration is also not covering the IXP software implementation like the one provided by route-server solutions like open-ixp, etc.
+
+It's also important to test and validate the configuration before deploying it to production.
+
+Please note that this is an example and the actual configuration may vary depending on the specific requirements and the network infrastructure.
+
+
+
+
+Mike Starr
+Can you create a template that doesn't include specific subnets or autonomous system numbers?
+Sure, here is a template that can be used to create a configuration for a Cisco router that can be used to start an Internet Exchange (IX) from scratch, without including specific subnets or autonomous system numbers:
+
+Copy code
+! Enable routing protocols
+router ospf 1
+ network _________ _________ area _____
+!
+router bgp _____
+ no synchronization
+ bgp log-neighbor-changes
+ network _________ mask _________
+ neighbor _________ remote-as _____
+ neighbor _________ update-source _________
+!
+! Configure interfaces
+interface _________
+ ip address _________ _________
+!
+interface _________
+ ip address _________ _________
+ no shutdown
+!
+interface _________
+ ip address _________ _________
+ no shutdown
+!
+! Configure BGP peering sessions
+router bgp _____
+ neighbor _________ remote-as _____
+ neighbor _________ update-source _________
+ neighbor _________ remote-as _____
+ neighbor _________ update-source _________
+ neighbor _________ remote-as _____
+ neighbor _________ update-source _________
+!
+! Configure route-maps to control inbound/outbound routing
+route-map _________ permit _____
+ match ip address prefix-list _________
+ set local-preference _____
+!
+route-map _________ permit _____
+ match ip address prefix-list _________
+!
+ip prefix-list _________ seq _____ permit _________
+ip prefix-list _________ seq _____ permit _________
+ip prefix-list _________ seq _____ permit _________
+!
+! Apply route-maps to control inbound/outbound routing
+router bgp _____
+ neighbor _________ route-map _________ in
+ neighbor _________ route-map _________ out
+ neighbor _________ route-map _________ in
+ neighbor _________ route-map _________ out
+ neighbor _________ route-map _________ in
+ neighbor _________ route-map _________ out
+And here is a template that can be used to create a configuration for a Juniper router that can be used to start an Internet Exchange (IX) from scratch, without including specific subnets or autonomous system numbers:
+
+Copy code
+set protocols ospf area 0 interface _________
+set protocols ospf area 0 interface _________
+set protocols ospf area 0 interface _________
+set protocols bgp group _________ type internal
+set protocols bgp group _________ local-address _________
+set protocols bgp group _________ peer-as _____
+set protocols bgp group _________ neighbor _________
+set policy-options policy-statement _________ from protocol bgp
+set policy-options policy-statement _________ then local-preference _____
+set policy-options policy-statement _________ then accept
+set policy-options policy-statement _________ from protocol bgp
+set policy-options policy-statement _________ then accept
+set policy-options prefix-list _________ _________
+set policy-options prefix-list _________ _________
+set policy-options prefix-list _________ _________
+set policy-options prefix-list _________ _________
+set policy-options prefix-list _________ _________
+set policy-options prefix-list _________
+
+
+
+Mike Starr
+continue 
+Here is the continuation of the template for Juniper:
+
+Copy code
+set policy-options prefix-list _________ _________
+set interfaces _________ unit 0 family inet address _________
+set interfaces _________ unit 0 family inet address _________
+set interfaces _________ unit 0 family inet address _________
+set protocols bgp group _________ import _________
+set protocols bgp group _________ export _________
+This templates are a starting point for creating a configuration for a Cisco or Juniper router that can be used to start an Internet Exchange (IX) from scratch, without including specific subnets or autonomous system numbers.
+The templates include all the necessary commands to set up routing protocols, interfaces, BGP peering sessions, and route-maps to control inbound and outbound routing. The templates are not a complete configuration and some information needs to be filled in to match the specific requirements of the IX and the network infrastructure.
+
+It's important to note that these templates are not covering the IXP implementation details such as peering policies, agreements, etc. This configuration is also not covering the IXP software implementation like the one provided by route-server solutions like open-ixp, etc.
+
+It's also important to test and validate the configuration before deploying it to production.
+
+Please note that these are examples and the actual configuration may vary depending on the specific requirements and the network infrastructure.
